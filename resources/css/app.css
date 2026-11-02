@@ -1,0 +1,9 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+@import './medicore/variables.css';
+@import './medicore/base.css';
+@import './medicore/layout.css';
+@import './medicore/components.css';
+@import './medicore/dashboard.css';
+@import './apotek.css';
