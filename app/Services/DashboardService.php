@@ -10,6 +10,7 @@ use App\Models\Supplier;
 use App\Support\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class DashboardService
 {
@@ -99,14 +100,24 @@ class DashboardService
         $billed = Invoice::query()
             ->notVoided()
             ->whereDate('invoices.invoice_date', '>=', $start->toDateString())
-            ->selectRaw("strftime('%Y-%m', invoices.invoice_date) as period, SUM(invoices.total_amount) as total")
+            ->when(DB::getDriverName() !== 'mysql', function ($query) {
+                $query->selectRaw("strftime('%Y-%m', invoices.invoice_date) as period");
+            })
+            ->when(DB::getDriverName() === 'mysql', function ($query) {
+                $query->selectRaw("DATE_FORMAT(invoices.invoice_date, '%Y-%m') as period");
+            })
             ->groupBy('period')
             ->pluck('total', 'period');
 
         $paid = Payment::query()
             ->posted()
             ->whereDate('payments.payment_date', '>=', $start->toDateString())
-            ->selectRaw("strftime('%Y-%m', payments.payment_date) as period, SUM(payments.total_amount) as total")
+            ->when(DB::getDriverName() !== 'mysql', function ($query) {
+                $query->selectRaw("strftime('%Y-%m', payments.payment_date) as period");
+            })
+            ->when(DB::getDriverName() === 'mysql', function ($query) {
+                $query->selectRaw("DATE_FORMAT(payments.payment_date, '%Y-%m') as period");
+            })
             ->groupBy('period')
             ->pluck('total', 'period');
 
