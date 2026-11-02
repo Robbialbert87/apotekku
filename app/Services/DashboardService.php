@@ -101,10 +101,10 @@ class DashboardService
             ->notVoided()
             ->whereDate('invoices.invoice_date', '>=', $start->toDateString())
             ->when(DB::getDriverName() !== 'mysql', function ($query) {
-                $query->selectRaw("strftime('%Y-%m', invoices.invoice_date) as period");
+                $query->selectRaw("strftime('%Y-%m', invoices.invoice_date) as period, SUM(invoices.total_amount) as total");
             })
             ->when(DB::getDriverName() === 'mysql', function ($query) {
-                $query->selectRaw("DATE_FORMAT(invoices.invoice_date, '%Y-%m') as period");
+                $query->selectRaw("DATE_FORMAT(invoices.invoice_date, '%Y-%m') as period, SUM(invoices.total_amount) as total");
             })
             ->groupBy('period')
             ->pluck('total', 'period');
@@ -113,10 +113,10 @@ class DashboardService
             ->posted()
             ->whereDate('payments.payment_date', '>=', $start->toDateString())
             ->when(DB::getDriverName() !== 'mysql', function ($query) {
-                $query->selectRaw("strftime('%Y-%m', payments.payment_date) as period");
+                $query->selectRaw("strftime('%Y-%m', payments.payment_date) as period, SUM(payments.total_amount) as total");
             })
             ->when(DB::getDriverName() === 'mysql', function ($query) {
-                $query->selectRaw("DATE_FORMAT(payments.payment_date, '%Y-%m') as period");
+                $query->selectRaw("DATE_FORMAT(payments.payment_date, '%Y-%m') as period, SUM(payments.total_amount) as total");
             })
             ->groupBy('period')
             ->pluck('total', 'period');

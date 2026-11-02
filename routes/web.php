@@ -159,6 +159,8 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::put('/pengaturan', [SettingController::class, 'update'])
         ->middleware('permission:setting.update')
         ->name('settings.update');
+    Route::put('/pengaturan/password', [SettingController::class, 'updatePassword'])
+        ->name('settings.password');
 
     Route::get('/log-aktivitas', [ActivityLogController::class, 'index'])
         ->middleware('permission:activity.view')
