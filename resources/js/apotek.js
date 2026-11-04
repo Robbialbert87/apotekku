@@ -584,7 +584,18 @@ import 'datatables.net';
       if ($(this).hasClass('dataTable')) {
         return;
       }
-      var table = $(this).DataTable({
+
+      var $table = $(this);
+      var headerCount = $table.find('thead th').length;
+      var hasInvalidRow = $table.find('tbody tr').toArray().some(function (tr) {
+        return tr.cells.length !== headerCount;
+      });
+
+      if (hasInvalidRow) {
+        return;
+      }
+
+      var table = $table.DataTable({
         pageLength: 10,
         lengthMenu: [10, 25, 50, 100],
         layout: {
