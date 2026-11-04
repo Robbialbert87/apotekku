@@ -24,13 +24,23 @@
     </div>
 
     <div class="stat-grid">
-        @foreach ($metrics as $metric)
+        @foreach ($metrics as $key => $metric)
             @php
                 $tone = $metric['tone'];
                 $bg = "var(--color-{$tone}-soft)";
                 $color = "var(--color-{$tone})";
+                $href = match ($key) {
+                    'suppliers' => route('suppliers.index'),
+                    'invoices' => route('invoices.index'),
+                    'billed' => route('invoices.index'),
+                    'paid' => route('payments.index'),
+                    'outstanding' => route('plans.index'),
+                    'due_soon' => route('plans.index'),
+                    'overdue' => route('plans.index', ['mode' => 'b', 'due_status' => 'overdue']),
+                    default => route('dashboard'),
+                };
             @endphp
-            <div class="stat-card">
+            <a href="{{ $href }}" class="stat-card stat-card--link" aria-label="{{ $metric['label'] }}">
                 <div class="stat-card__top">
                     <div class="stat-card__icon" style="background:{{ $bg }}; color:{{ $color }};"><i class="bi {{ $metric['icon'] }}"></i></div>
                 </div>
@@ -38,8 +48,31 @@
                     {{ $metric['format'] === 'currency' ? Format::rupiah($metric['value']) : number_format((int) $metric['value'], 0, ',', '.') }}
                 </div>
                 <div class="stat-card__label">{{ $metric['label'] }}</div>
-            </div>
+            </a>
         @endforeach
+    </div>
+
+    <div class="card-custom" style="margin-bottom:var(--space-6);">
+        <div class="card-custom__header" style="flex-wrap:wrap; gap:12px;">
+            <h3 style="margin:0;">Pengeluaran / Pembayaran Bulanan</h3>
+            <form action="{{ route('dashboard') }}" method="GET" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <select name="expense_month" class="form-select-custom form-control-custom" onchange="this.form.submit()" style="min-width:140px;">
+                    @foreach ($expenseMonthNames as $value => $label)
+                        <option value="{{ $value }}" @selected($value === $expenseMonthNumber)>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <select name="expense_year" class="form-select-custom form-control-custom" onchange="this.form.submit()" style="min-width:100px;">
+                    @foreach ($expenseYears as $year)
+                        <option value="{{ $year }}" @selected($year === $expenseYear)>{{ $year }}</option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+        <div class="card-custom__body">
+            <div class="stat-card__value" style="font-size:1.6rem;">{{ Format::rupiah($monthlyExpense) }}</div>
+            <p class="text-muted text-small" style="margin:var(--space-2) 0 var(--space-3);">Total pembayaran posted pada bulan {{ \Carbon\Carbon::createFromFormat('Y-m', $expenseMonth)->locale('id')->translatedFormat('F Y') }}.</p>
+            <a href="{{ route('payments.index', ['date_from' => $expenseStart, 'date_to' => $expenseEnd]) }}" class="btn-custom btn-outline-custom btn-sm-custom"><i class="bi bi-eye"></i> Lihat detail</a>
+        </div>
     </div>
 
     <div class="chart-row">

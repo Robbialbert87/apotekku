@@ -31,7 +31,7 @@
             @if (! $invoice->isVoided() && auth()->user()->hasPermission('invoice.update'))
                 <a href="{{ route('invoices.edit', $invoice) }}" class="btn-custom btn-outline-custom"><i class="bi bi-pencil"></i> Ubah</a>
             @endif
-            <button type="button" class="btn-custom btn-outline-custom" onclick="window.print()"><i class="bi bi-printer"></i> Cetak</button>
+            <a href="{{ route('invoices.index') }}" class="btn-custom btn-outline-custom"><i class="bi bi-arrow-left"></i> Kembali</a>
         </div>
     </div>
 
@@ -100,7 +100,11 @@
                 </div>
                 <div style="margin-top:var(--space-3);">
                     <div class="detail-item__label">Status Jatuh Tempo</div>
-                    <x-status-badge :status="$invoice->due_status" />
+                    @if ($invoice->isPaid())
+                        <span class="text-muted">-</span>
+                    @else
+                        <x-status-badge :status="$invoice->due_status" />
+                    @endif
                 </div>
             </div>
         </div>

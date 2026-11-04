@@ -31,7 +31,7 @@
                     <label class="form-label-custom" for="search">Cari</label>
                     <div class="input-group-custom">
                         <i class="bi bi-search"></i>
-                        <input type="search" id="search" name="search" class="form-control-custom" value="{{ $filters['search'] ?? '' }}" placeholder="No. transaksi, referensi, atau supplier...">
+                        <input type="search" id="payment-search" name="search" class="form-control-custom" value="{{ $filters['search'] ?? '' }}" placeholder="No. transaksi, referensi, atau supplier..." data-dt-search>
                     </div>
                 </div>
                 <div class="filter-field">

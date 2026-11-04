@@ -22,7 +22,7 @@ class DashboardService
         $receivable = $this->receivableQuery();
         $totalBilled = (clone $receivable)->sum('invoices.total_amount');
         $totalPaid = $this->totalPaid();
-        $outstanding = max(0, Money::toCents((string) $totalBilled) - Money::toCents((string) $totalPaid));
+        $outstanding = max(0, Money::toCents((string) $totalBilled) - $totalPaid);
 
         $dueSoon = Invoice::query()
             ->outstanding()
@@ -59,7 +59,7 @@ class DashboardService
             ],
             'paid' => [
                 'label' => 'Total Dibayar',
-                'value' => Money::fromCents(Money::toCents((string) $totalPaid)),
+                'value' => Money::fromCents($totalPaid),
                 'format' => 'currency',
                 'icon' => 'bi-check2-circle',
                 'tone' => 'success',
@@ -148,7 +148,7 @@ class DashboardService
     {
         $billed = $this->receivableQuery();
         $total = Money::toCents((string) (clone $billed)->sum('invoices.total_amount'));
-        $paid = Money::toCents((string) $this->totalPaid());
+        $paid = $this->totalPaid();
 
         $partial = (int) (clone $billed)
             ->whereRaw('(SELECT COALESCE(SUM(pa.amount), 0) FROM payment_allocations pa INNER JOIN payments p ON p.id = pa.payment_id AND p.status = ? WHERE pa.invoice_id = invoices.id) > 0', [PaymentRecordStatus::Posted->value])
@@ -242,6 +242,36 @@ class DashboardService
             ->orderBy('invoices.due_date')
             ->limit($limit)
             ->get();
+    }
+
+    public function monthlyPaymentTotal(string $month): int
+    {
+        if (! preg_match('/^\\d{4}-\\d{2}$/', $month)) {
+            $month = today()->format('Y-m');
+        }
+
+        [$year, $mon] = explode('-', $month);
+
+        return Money::toCents((string) Payment::query()
+            ->posted()
+            ->whereYear('payments.payment_date', (int) $year)
+            ->whereMonth('payments.payment_date', (int) $mon)
+            ->sum('payments.total_amount'));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function recentMonths(int $months = 12): array
+    {
+        $result = [];
+
+        for ($i = 0; $i < $months; $i++) {
+            $date = today()->startOfMonth()->subMonths($i);
+            $result[$date->format('Y-m')] = $date->locale('id')->translatedFormat('F Y');
+        }
+
+        return $result;
     }
 
     public function receivableQuery(): Builder

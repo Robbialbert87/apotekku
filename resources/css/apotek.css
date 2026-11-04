@@ -329,3 +329,150 @@
 @media (max-width: 767.98px) {
   .supplier-form-columns { grid-template-columns: 1fr; }
 }
+
+/* ---- Kartu dashboard sebagai tombol ------------------------------------- */
+.stat-card--link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.stat-card--link:hover {
+  box-shadow: 0 6px 18px rgba(20, 30, 35, 0.12);
+  transform: translateY(-2px);
+}
+.stat-card--link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---- DataTables v3 (sinkron dengan style aplikasi) ---------------------- */
+.dt-container {
+  width: 100%;
+}
+.dt-layout-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
+}
+.dt-container > .dt-layout-row:first-child {
+  justify-content: flex-end;
+  padding-right: var(--space-4);
+}
+.dt-layout-row:last-child {
+  margin-bottom: 0;
+  margin-top: var(--space-3);
+}
+.dt-layout-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.dt-layout-full {
+  width: 100%;
+}
+.dt-length label,
+.dt-search label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+.dt-length .dt-input,
+.dt-search .dt-input {
+  height: 34px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  color: var(--color-text-primary);
+  font-size: var(--fs-small);
+}
+.dt-search .dt-input {
+  min-width: 180px;
+}
+.dt-length .dt-input:focus,
+.dt-search .dt-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
+}
+.dt-info {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+.dt-paging {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.dt-paging .dt-paging-button {
+  min-width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding-inline: 8px;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  background: transparent;
+  cursor: pointer;
+}
+.dt-paging .dt-paging-button:hover {
+  background: var(--color-card-alt);
+  color: var(--color-text-primary);
+}
+.dt-paging .dt-paging-button.current,
+.dt-paging .dt-paging-button.current:hover {
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+}
+.dt-paging .dt-paging-button.disabled,
+.dt-paging .dt-paging-button.disabled:hover {
+  opacity: 0.4;
+  pointer-events: none;
+  background: transparent;
+  color: var(--color-text-muted);
+}
+/* sorting indicators */
+table.dataTable thead th.dt-orderable-asc,
+table.dataTable thead th.dt-orderable-desc {
+  cursor: pointer;
+}
+table.dataTable thead th.dt-ordering-asc::after,
+table.dataTable thead th.dt-ordering-desc::after {
+  color: var(--color-primary);
+}
+@media (max-width: 575.98px) {
+  .dt-search .dt-input { min-width: 0; width: 100%; }
+  .dt-paging { justify-content: center; }
+}
+
+/* Sembunyikan search bawaan DataTables di halaman invoice & pembayaran (sudah ada input sendiri) */
+#table-invoices_wrapper .dt-search,
+#table-payments_wrapper .dt-search {
+  display: none !important;
+}
+
+/* ---- Mode HP (semua halaman) -------------------------------------------- */
+@media (max-width: 575.98px) {
+  .page-header__title { font-size: 1.25rem; }
+  .page-header__desc { font-size: 12px; }
+  .stat-card { padding: var(--space-3); }
+  .stat-card__value { font-size: 1.1rem; line-height: 1.2; }
+  .stat-card__label { font-size: 11px; }
+  .chart-canvas-wrap { height: 200px; }
+  .person-card { flex-wrap: wrap; gap: var(--space-2); }
+}

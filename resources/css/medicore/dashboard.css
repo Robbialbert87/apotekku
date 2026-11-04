@@ -10,7 +10,8 @@
 }
 @media (max-width: 1200px) { .stat-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 768px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 360px) { .stat-grid { grid-template-columns: 1fr; } }
 
 /* 4-column variant used by most list pages' mini stat row. Self-contained
    (own breakpoints) rather than relying on cascade order against the base

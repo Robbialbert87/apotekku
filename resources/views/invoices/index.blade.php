@@ -31,7 +31,7 @@
                     <label class="form-label-custom" for="search">Cari</label>
                     <div class="input-group-custom">
                         <i class="bi bi-search"></i>
-                        <input type="search" id="search" name="search" class="form-control-custom" value="{{ $filters['search'] ?? '' }}" placeholder="Nomor invoice atau supplier...">
+                        <input type="search" id="invoice-search" name="search" class="form-control-custom" value="{{ $filters['search'] ?? '' }}" placeholder="Nomor invoice atau supplier..." data-dt-search>
                     </div>
                 </div>
                 <div class="filter-field">
@@ -107,7 +107,13 @@
                             <td data-label="Dibayar" class="text-end money">{{ Format::rupiah($invoice->paid_amount) }}</td>
                             <td data-label="Sisa" class="text-end money">{{ Format::rupiah($invoice->remaining_amount) }}</td>
                             <td data-label="Status"><x-status-badge :status="$invoice->payment_status" /></td>
-                            <td data-label="Jatuh Tempo"><x-status-badge :status="$invoice->due_status" /></td>
+                            <td data-label="Jatuh Tempo">
+    @if ($invoice->isPaid())
+        <span class="text-muted">-</span>
+    @else
+        <x-status-badge :status="$invoice->due_status" />
+    @endif
+</td>
                             <td data-label="">
                                 <div class="table-row-actions">
                                     <a href="{{ route('invoices.show', $invoice) }}" class="btn-custom btn-ghost-custom btn-sm-custom" title="Detail"><i class="bi bi-eye"></i></a>

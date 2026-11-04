@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import $ from 'jquery';
+window.$ = window.jQuery = $;
 import 'datatables.net';
 
 (function () {
@@ -136,6 +137,29 @@ import 'datatables.net';
     }
   }
 
+  function parseAmount(value) {
+    return Number(String(value || '').replace(/\D/g, '')) || 0;
+  }
+
+  function syncAllocationButton(row) {
+    if (!row) {
+      return;
+    }
+
+    const input = row.querySelector('[data-allocation]');
+    const button = row.querySelector('[data-fill-remaining]');
+    if (!input || !button) {
+      return;
+    }
+
+    const fullAmount = parseRupiah(button.getAttribute('data-fill-remaining'));
+    const currentValue = parseRupiah(input.value);
+    const isActive = fullAmount > 0 && currentValue === fullAmount;
+
+    button.classList.toggle('btn-success-custom', isActive);
+    button.classList.toggle('btn-ghost-custom', !isActive);
+  }
+
   function initPaymentForm() {
     const form = document.querySelector('[data-payment-form]');
     if (!form) {
@@ -143,16 +167,37 @@ import 'datatables.net';
     }
 
     form.querySelectorAll('[data-fill-remaining]').forEach((button) => {
+      const row = button.closest('.allocation-row');
+
       button.addEventListener('click', () => {
-        const row = button.closest('.allocation-row');
         const input = row ? row.querySelector('[data-allocation]') : null;
         if (!input) {
           return;
         }
 
-        input.value = formatThousands(button.getAttribute('data-fill-remaining') || 0);
+        const fullAmount = parseRupiah(button.getAttribute('data-fill-remaining'));
+        const currentValue = parseRupiah(input.value);
+
+        if (fullAmount > 0 && currentValue === fullAmount) {
+          input.value = '';
+        } else {
+          input.value = formatThousands(fullAmount);
+        }
+
+        syncAllocationButton(row);
         updatePaymentSummary();
       });
+
+      if (row) {
+        const input = row.querySelector('[data-allocation]');
+        if (input) {
+          input.addEventListener('input', () => {
+            syncAllocationButton(row);
+          });
+        }
+
+        syncAllocationButton(row);
+      }
     });
 
     const supplierSelect = form.querySelector('[data-supplier-select]');
@@ -532,24 +577,41 @@ import 'datatables.net';
   }
 
   function initDataTables() {
-    if (!window.jQuery || !jQuery.fn || !jQuery.fn.DataTable) {
+    if (!$ || !$.fn || !$.fn.DataTable) {
       return;
     }
-    jQuery('.datatable').each(function () {
-      if (jQuery(this).hasClass('dataTable')) {
+    $('.datatable').each(function () {
+      if ($(this).hasClass('dataTable')) {
         return;
       }
-      jQuery(this).DataTable({
+      var table = $(this).DataTable({
         pageLength: 10,
         lengthMenu: [10, 25, 50, 100],
+        layout: {
+          topStart: null,
+          topEnd: 'pageLength',
+          bottomStart: 'info',
+          bottomEnd: 'paging',
+        },
         language: {
-          search: 'Cari:',
           lengthMenu: 'Tampilkan _MENU_ data',
           info: 'Menampilkan _START_ - _END_ dari _TOTAL_ data',
           paginate: { first: 'Awal', last: 'Akhir', next: '›', previous: '‹' },
           zeroRecords: 'Data tidak ditemukan',
         },
       });
+
+      if (this.id === 'table-invoices') {
+        $('#invoice-search').on('input', function () {
+          table.search(this.value).draw();
+        });
+      }
+
+      if (this.id === 'table-payments') {
+        $('#payment-search').on('input', function () {
+          table.search(this.value).draw();
+        });
+      }
     });
   }
 

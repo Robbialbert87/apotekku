@@ -86,11 +86,11 @@
 
                 <div class="filter-field">
                     <label class="form-label-custom" for="date_from">Dari Tanggal</label>
-                    <input type="date" id="date_from" name="date_from" class="form-control-custom" value="{{ $filters['date_from'] ?? '' }}">
+                    <input type="text" id="date_from" name="date_from" class="form-control-custom date-picker" value="{{ $filters['date_from'] ?? '' }}" placeholder="dd/mm/yyyy">
                 </div>
                 <div class="filter-field">
                     <label class="form-label-custom" for="date_to">Sampai Tanggal</label>
-                    <input type="date" id="date_to" name="date_to" class="form-control-custom" value="{{ $filters['date_to'] ?? '' }}">
+                    <input type="text" id="date_to" name="date_to" class="form-control-custom date-picker" value="{{ $filters['date_to'] ?? '' }}" placeholder="dd/mm/yyyy">
                 </div>
 
                 <div class="filter-actions">

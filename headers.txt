@@ -1,9 +1,0 @@
-HTTP/1.1 419 unknown status
-Host: 127.0.0.1:8000
-Connection: close
-X-Powered-By: PHP/8.4.5
-Cache-Control: no-cache, private
-date: Mon, 02 Nov 2026 04:11:38 GMT
-Content-Type: text/html; charset=utf-8
-Set-Cookie: apotek-billing-session=eyJpdiI6IjEwNE1HcXpzalQzWXVwSW1zZ2pvSkE9PSIsInZhbHVlIjoib0tROG1VUkJlaGZuV1ZMRCt0SmpQR1kzcHViMlh5N2Y0eXhkR28xVnVVQVdFUm9RMVJXeGNsVWVISCtidnVsbzFUOGdzUnpoV2U2OE9pT3IzckFFWmhTUHNIS2VUR3lvejRNUmhTTVpRb2JZRURXOCtTbHhtQXZlc2FQOVE3dEQiLCJtYWMiOiIwZmFmOWY2OTkzYzk2OGMzZTQwNzUxNGYzNDQ0YTNhZjk1YzE5ZWE0Y2Y3MWMwZjU2M2EyYzc3YjUyOTBiNGE1IiwidGFnIjoiIn0%3D; expires=Mon, 02 Nov 2026 06:11:38 GMT; Max-Age=7200; path=/; httponly; samesite=lax
-

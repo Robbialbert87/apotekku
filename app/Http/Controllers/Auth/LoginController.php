@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +41,7 @@ class LoginController extends Controller
             ]);
         }
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::validate($credentials)) {
             RateLimiter::hit($key, 60);
 
             throw ValidationException::withMessages([
@@ -48,15 +49,19 @@ class LoginController extends Controller
             ]);
         }
 
-        RateLimiter::clear($key);
+        $user = User::where('email', $credentials['email'])->first();
 
-        if (! $request->user()->is_active) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
+        if ($user && ! $user->is_active) {
             throw ValidationException::withMessages([
                 'email' => 'Akun Anda dinonaktifkan. Hubungi admin.',
+            ]);
+        }
+
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            RateLimiter::hit($key, 60);
+
+            throw ValidationException::withMessages([
+                'email' => 'Email atau kata sandi tidak sesuai.',
             ]);
         }
 
