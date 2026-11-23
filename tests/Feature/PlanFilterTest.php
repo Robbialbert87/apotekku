@@ -52,3 +52,30 @@ test('plan filter B shows all outstanding with supplier filter', function (): vo
     $response->assertOk()->assertSee($mine->invoice_number);
     $response->assertDontSee($theirs->invoice_number);
 });
+
+test('plan summary stays the same when navigating between pages', function (): void {
+    collect(range(1, 12))->each(fn (int $i): Invoice => Invoice::factory()->total(100000 + $i)->create([
+        'supplier_id' => $this->supplier->id,
+        'created_by' => $this->admin->id,
+        'due_date' => now()->addDays(5),
+    ]));
+
+    $filters = [
+        'mode' => 'a',
+        'date_from' => now()->toDateString(),
+        'date_to' => now()->addDays(10)->toDateString(),
+    ];
+
+    $firstPage = $this->actingAs($this->admin)->get(route('plans.index', [...$filters, 'page' => 1]));
+    $secondPage = $this->actingAs($this->admin)->get(route('plans.index', [...$filters, 'page' => 2]));
+
+    $firstPage->assertOk();
+    $secondPage->assertOk();
+
+    $expectedSummary = ['count' => 12, 'total' => '1200078.00'];
+
+    expect($firstPage->viewData('invoices')->currentPage())->toBe(1)
+        ->and($secondPage->viewData('invoices')->currentPage())->toBe(2)
+        ->and($firstPage->viewData('summary'))->toEqual($expectedSummary)
+        ->and($secondPage->viewData('summary'))->toEqual($expectedSummary);
+});

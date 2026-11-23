@@ -10,16 +10,35 @@ class DummyInvoiceSeeder extends Seeder
 {
     public function run(): void
     {
-        $suppliers = [
-            Supplier::factory()->create(['name' => 'Dummy Supplier A', 'is_active' => true]),
-            Supplier::factory()->create(['name' => 'Dummy Supplier B', 'is_active' => true]),
-        ];
+        Invoice::query()
+            ->where('invoice_number', 'like', 'DUMMY-%')
+            ->delete();
 
-        for ($i = 1; $i <= 15; $i++) {
-            $supplier = $suppliers[($i - 1) % 2];
+        Supplier::query()
+            ->where('name', 'like', 'Dummy Supplier%')
+            ->delete();
 
-            Invoice::factory()->create([
-                'supplier_id' => $supplier->id,
+        $suppliers = collect([
+            'Dummy Supplier A',
+            'Dummy Supplier B',
+            'Dummy Supplier C',
+        ])->map(fn (string $name): Supplier => Supplier::factory()->create([
+            'name' => $name,
+            'is_active' => true,
+        ]));
+
+        for ($i = 1; $i <= 40; $i++) {
+            $factory = Invoice::factory();
+
+            $factory = match (($i - 1) % 4) {
+                0 => $factory->overdue(),
+                1 => $factory->dueToday(),
+                2 => $factory->dueSoon(),
+                3 => $factory->notDue(),
+            };
+
+            $factory->create([
+                'supplier_id' => $suppliers[($i - 1) % 3]->id,
                 'invoice_number' => 'DUMMY-INV-'.str_pad((string) $i, 3, '0', STR_PAD_LEFT),
                 'created_by' => null,
             ]);

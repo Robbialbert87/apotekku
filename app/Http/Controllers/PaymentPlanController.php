@@ -36,12 +36,12 @@ class PaymentPlanController extends Controller
                 ->dueBetween($dateFrom, $dateTo);
         }
 
+        $summaryInvoices = (clone $query)->get();
+
         $invoices = $query
             ->orderBy('invoices.due_date')
             ->paginate((int) config('apotek.pagination', 10))
             ->withQueryString();
-
-        $summaryQuery = $query->reorder()->get();
 
         return view('plans.index', [
             'mode' => $mode,
@@ -56,8 +56,8 @@ class PaymentPlanController extends Controller
                 ],
             ),
             'summary' => [
-                'count' => $summaryQuery->count(),
-                'total' => Money::fromCents($summaryQuery->sum(fn (Invoice $invoice): int => Money::toCents($invoice->remaining_amount))),
+                'count' => $summaryInvoices->count(),
+                'total' => Money::fromCents($summaryInvoices->sum(fn (Invoice $invoice): int => Money::toCents($invoice->remaining_amount))),
             ],
         ]);
     }
