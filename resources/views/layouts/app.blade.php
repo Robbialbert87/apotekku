@@ -14,7 +14,7 @@
             }
         })();
     </script>
-    <title>@yield('title', 'Dashboard') · {{ config('apotek.name') }}</title>
+    <title>@yield('title', 'Dashboard') · {{ $apotekName }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
@@ -23,9 +23,15 @@
 
 <div class="app-shell">
     <aside class="sidebar" aria-label="Menu utama">
-        <a class="sidebar__brand" href="{{ route('dashboard') }}" aria-label="{{ config('apotek.name') }}">
-            <div class="sidebar__brand-mark">A</div>
-            <span class="sidebar__brand-text">{{ config('apotek.name') }}</span>
+        <a class="sidebar__brand" href="{{ route('dashboard') }}" aria-label="{{ $apotekName }}">
+            <div class="sidebar__brand-mark">
+                @if ($apotekLogoUrl)
+                    <img src="{{ $apotekLogoUrl }}" alt="{{ $apotekName }}">
+                @else
+                    A
+                @endif
+            </div>
+            <span class="sidebar__brand-text">{{ $apotekName }}</span>
         </a>
 
         <nav class="sidebar__nav">

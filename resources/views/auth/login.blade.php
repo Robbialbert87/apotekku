@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk · {{ config('apotek.name') }}</title>
+    <title>Masuk · {{ $apotekName }}</title>
     <script>
         (function () {
             try {
@@ -19,8 +19,14 @@
 <body class="auth-page">
 <div class="auth-card">
     <div class="auth-brand">
-        <div class="auth-brand-mark">A</div>
-        <strong>{{ config('apotek.name') }}</strong>
+        <div class="auth-brand-mark">
+            @if ($apotekLogoUrl)
+                <img src="{{ $apotekLogoUrl }}" alt="{{ $apotekName }}">
+            @else
+                A
+            @endif
+        </div>
+        <strong>{{ $apotekName }}</strong>
     </div>
 
     <div style="text-align:center; margin-bottom:var(--space-6);">

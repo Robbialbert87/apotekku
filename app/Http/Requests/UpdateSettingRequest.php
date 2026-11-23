@@ -18,6 +18,8 @@ class UpdateSettingRequest extends FormRequest
     {
         return [
             'apotek_name' => ['required', 'string', 'max:150'],
+            'apotek_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'remove_logo' => ['nullable', 'boolean'],
             'apotek_address' => ['nullable', 'string', 'max:1000'],
             'apotek_phone' => ['nullable', 'string', 'max:30'],
             'apotek_email' => ['nullable', 'email', 'max:150'],

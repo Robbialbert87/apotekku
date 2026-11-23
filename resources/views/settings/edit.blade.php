@@ -23,7 +23,7 @@
     <div class="content-row">
         <!-- Kolom Kiri: Identitas Apotek & Preferensi Sistem -->
         <div class="stack gap-4">
-            <form action="{{ route('settings.update') }}" method="POST">
+            <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -66,6 +66,31 @@
                                           class="form-control-custom @error('apotek_address') is-invalid @enderror"
                                           maxlength="1000" placeholder="Alamat lengkap lokasi apotek...">{{ old('apotek_address', $settings['apotek_address']) }}</textarea>
                                 @error('apotek_address')<div class="form-error-text">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label-custom" for="apotek_logo">Logo Apotek</label>
+                                <div class="logo-setting">
+                                    <div class="logo-setting__preview">
+                                        @if ($settings['apotek_logo'])
+                                            <img src="{{ route('settings.logo') }}" alt="Logo {{ $settings['apotek_name'] }}">
+                                        @else
+                                            A
+                                        @endif
+                                    </div>
+                                    <div class="logo-setting__control">
+                                        <input type="file" id="apotek_logo" name="apotek_logo"
+                                               class="form-control-custom @error('apotek_logo') is-invalid @enderror"
+                                               accept="image/jpeg,image/png,image/webp">
+                                        @error('apotek_logo')<div class="form-error-text">{{ $message }}</div>@enderror
+                                        <div class="form-hint">Format JPG, PNG, atau WebP. Maksimal 5 MB. Disarankan rasio 1:1.</div>
+                                        @if ($settings['apotek_logo'])
+                                            <label style="display:inline-flex; align-items:center; gap:6px; margin-top:6px; font-size:var(--fs-small); color:var(--color-text-secondary);">
+                                                <input type="checkbox" name="remove_logo" value="1"> Hapus logo saat ini
+                                            </label>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

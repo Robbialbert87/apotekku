@@ -11,6 +11,7 @@ class SettingSeeder extends Seeder
     {
         $defaults = [
             'apotek_name' => config('apotek.name', 'Apotek Billing'),
+            'apotek_logo' => '',
             'apotek_address' => '',
             'apotek_phone' => '',
             'apotek_email' => '',
